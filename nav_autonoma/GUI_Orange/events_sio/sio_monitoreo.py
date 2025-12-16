@@ -1,8 +1,48 @@
 # Eventos de monitoreo para Socket.IO Client
 from library_opi.audio_player import AudioPlayer
+from std_msgs.msg import String, Bool
 
 class Monitoreo_RobotEvents:
+
+
+    def __init__(self):
+        # ==================== PARÁMETROS DE AUDIO ====================
+        self.declare_parameter('audio_file', '/home/orangepi/sound_ia/resource/desalojo.mp3')
+        self.declare_parameter('audio_device', 'plughw:3,0')
+        self.declare_parameter('trigger_cooldown', 5.0)  # Segundos entre triggers
+
+        self.audio_file = self.get_parameter('audio_file').value
+        audio_device = self.get_parameter('audio_device').value
+        self.trigger_cooldown = self.get_parameter('trigger_cooldown').value
+
+        # Inicializar audio
+        self.get_logger().info('🔊 Inicializando audio...')
+        self.audio = AudioPlayer(audio_device, node=self)
     
+
+    def _trigger_audio(self):
+        """Activa la reproducción de audio"""
+        try:
+            # Solo reproducir si no hay audio en curso
+            if not self.audio.is_playing_audio():
+                success = self.audio.play(self.audio_file, blocking=False)
+                
+                if success:
+                    self.trigger_count += 1
+                    self.last_trigger_time = time.time()
+                    
+                    # Publicar evento de trigger
+                    trigger_msg = Bool()
+                    trigger_msg.data = True
+                    self.trigger_pub.publish(trigger_msg)
+                    
+                    self.get_logger().info(
+                        f'🔔 Audio activado! (Trigger #{self.trigger_count})'
+                    )
+        except Exception as e:
+            self.get_logger().error(f'❌ Error activando audio: {e}')
+
+
     def register(self, sio, node):
         """
         Registra todos los eventos de monitoreo del robot
@@ -11,6 +51,11 @@ class Monitoreo_RobotEvents:
             sio: Cliente de socketio
             node: Nodo de ROS2 
         """
+
+        @sio.on("ejec-sound-alert")
+        def handle_sound_alert(data):
+            node.get_logger().info("🔔 Alerta de sonido recibida")
+            self._trigger_audio()
         
         # Iniciar proceso de navegación
         @sio.on("start-process")
