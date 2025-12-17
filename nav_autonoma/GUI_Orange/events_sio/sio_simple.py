@@ -120,3 +120,5 @@ class ControlSimpleEvents:
             })
         
         node.get_logger().info("✅ Eventos de control simple registrados")
+
+

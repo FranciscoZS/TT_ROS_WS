@@ -26,7 +26,7 @@ class Emisor_Node(Node):
         self.get_logger().info("📦 Registrando módulos de eventos...")
         self.socket_client.add_module(Monitoreo_RobotEvents())
         self.socket_client.add_module(ControlManual_RobotEvents())
-        self.socket_client.add_module(AudioManagerNode())
+        #self.socket_client.add_module(AudioManagerNode())
 
         # 3. Inicia la conexión
         self.get_logger().info("🔌 Iniciando conexión Socket.IO...")

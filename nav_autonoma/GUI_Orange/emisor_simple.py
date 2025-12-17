@@ -8,6 +8,9 @@ from rclpy.node import Node
 from std_msgs.msg import String
 
 from .GUI_sio import SocketIOClient
+
+from .events_sio.sio_monitoreo import Monitoreo_RobotEvents
+
 from .events_sio.sio_simple import ControlSimpleEvents
 
 # Dirección del servidor Socket.IO
@@ -25,6 +28,7 @@ class EmisorSimpleNode(Node):
         # Registrar SOLO módulo de control manual
         self.get_logger().info("📦 Registrando control manual...")
         self.socket_client.add_module(ControlSimpleEvents())
+        self.socket_client.add_module(Monitoreo_RobotEvents())
         
         # Iniciar conexión
         self.get_logger().info("🔌 Conectando a Socket.IO...")
