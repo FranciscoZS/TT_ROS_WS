@@ -3,7 +3,7 @@ import time
 import threading
 
 class SimpleRGBPCA9685:
-    def __init__(self, bus=2, node=None):
+    def __init__(self, bus=8, node=None):
         self.fd = wiringpi.wiringPiI2CSetupInterface(f"/dev/i2c-{bus}", 0x40)
         if self.fd < 0: 
             if node:
@@ -16,7 +16,7 @@ class SimpleRGBPCA9685:
         # Configurar PCA9685 a 1000Hz para LEDs
         wiringpi.wiringPiI2CWriteReg8(self.fd, 0x00, 0x10)
         time.sleep(0.005)
-        prescale = int(25000000.0 / (4096.0 * 1000) + 0.5) - 1
+        prescale = int(25000000 / (4096.0 * 1000) -1 + 0.5)
         wiringpi.wiringPiI2CWriteReg8(self.fd, 0xFE, prescale)
         time.sleep(0.005)
         wiringpi.wiringPiI2CWriteReg8(self.fd, 0x00, 0x00)
@@ -25,7 +25,7 @@ class SimpleRGBPCA9685:
         if node:
             node.get_logger().info('PCA9685 inicializado correctamente')
 
-    def set_color(self, r_chan, g_chan, b_chan, r, g, b):
+    def set_color(self, r_chan=0, g_chan=1, b_chan=2, r=0, g=0, b=0):
         """Establece color RGB (valores 0-100) de manera thread-safe"""
         with self.lock:
             def set_chan(chan, val):

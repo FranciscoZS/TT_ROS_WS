@@ -5,7 +5,7 @@ from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 
 class ADS1115:
-    def __init__(self, address=0x48, bus=2, gain=0x00, node=None):
+    def __init__(self, address=0x48, bus=8, gain=0x00, node=None):
         """
         Versión ROS simplificada del ADS1115 - Solo canales 0 y 1
         """
@@ -105,7 +105,7 @@ class ADS1115:
             'voltage': voltage_1
         }
         
-        return results
+        return results, voltage_0, voltage_1
     
     def close(self):
         if hasattr(self, 'bus'):

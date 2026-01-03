@@ -2,7 +2,7 @@ import smbus2
 import time
 
 class SCD40_SMBus:
-    def __init__(self, bus_number=2, address=0x62, node=None):
+    def __init__(self, bus_number=8, address=0x62, node=None):
         self.address = address
         self.bus = smbus2.SMBus(bus_number)
         self.node = node
@@ -34,7 +34,7 @@ class SCD40_SMBus:
             crc = self.calculate_crc8([high_byte, low_byte])
             
             self.bus.write_i2c_block_data(self.address, high_byte, [low_byte, crc])
-            time.sleep(0.001)
+            time.sleep(0.01)
             return True
         except Exception as e:
             if self.node:

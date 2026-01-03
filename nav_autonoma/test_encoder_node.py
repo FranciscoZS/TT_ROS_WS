@@ -13,10 +13,10 @@ class TestEncoderNode(Node):
         
         # Inicializar encoders
         self.encoders = [
-            OpticalEncoder(pin_a=4, pin_b=6, ppr=1000, node=self), # rueda frontal izquierda
-            OpticalEncoder(pin_a=9, pin_b=10, ppr=1000, node=self), # rueda frontal derecha
-            OpticalEncoder(pin_a=13, pin_b=15, ppr=1000, node=self), #rueda trasera derecha
-            OpticalEncoder(pin_a=16, pin_b=18, ppr=1000, node=self) #reda frontal derecha
+            OpticalEncoder(pin_a=4, pin_b=6, ppr=1000), # rueda frontal izquierda
+            OpticalEncoder(pin_a=9, pin_b=10, ppr=1000), # rueda frontal derecha
+            OpticalEncoder(pin_a=13, pin_b=15, ppr=1000), #rueda trasera derecha
+            OpticalEncoder(pin_a=16, pin_b=18, ppr=1000) #reda frontal derecha
         ]
         
         # Publisher para datos de encoders
@@ -30,7 +30,7 @@ class TestEncoderNode(Node):
     def publish_encoder_data(self):
         # Leer RPM de cada encoder
         #rpms = [enc.get_rpm() for enc in self.encoders]
-        counters = [float(enc.get_counter()) for enc in self.encoders] 
+        counters = [float(enc.counter) for enc in self.encoders] 
         # menos 1 porque la lectura esta invertiuda en las conexiones, 
         # es decir cuanbdo va de frente cuenta en negativos por lo que se puso el menos 1 para que cuente en positivos
         # Crear mensaje

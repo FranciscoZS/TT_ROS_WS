@@ -26,7 +26,7 @@ class TestADS1115SimpleNode(Node):
 
     def publish_adc_data(self):
         if self.ads.is_initialized():
-            adc_data = self.ads.read_channels_0_1()
+            adc_data,_,_ = self.ads.read_channels_0_1()
             
             # Crear mensaje con voltajes de los canales 0 y 1
             msg = Float32MultiArray()
